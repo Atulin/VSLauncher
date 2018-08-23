@@ -71,7 +71,7 @@ namespace VSLauncher
         private void OpenFile_Btn_OnClick(object sender, RoutedEventArgs e)
         {
             Project file = ((FrameworkElement)sender).DataContext as Project;
-            //System.Diagnostics.Process.Start(file.Uri);
+            System.Diagnostics.Process.Start(file.Uri);
         }
 
         // Select directory
