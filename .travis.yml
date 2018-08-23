@@ -1,2 +1,6 @@
 language: csharp
 solution: VSLauncher.sln
+mono: none
+dotnet: 2.1.401
+script:
+ - dotnet restore
