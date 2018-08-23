@@ -100,9 +100,7 @@
                   Grid.Row="1"
                   PreviewMouseLeftButtonUp="OpenFile_Btn_OnClick"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  ItemsSource="{Binding ProjectsCollection}"
-                  DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Name="OpenFile_Btn"

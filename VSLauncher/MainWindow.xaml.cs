@@ -26,8 +26,8 @@ namespace VSLauncher
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public readonly CollectionViewSource ProjectsSource = new CollectionViewSource();
-        public ObservableCollection<Project> ProjectsCollection { get; set; }
+        public CollectionViewSource ProjectsSource { get; set; } = new CollectionViewSource();
+
         private List<Project> Projects { get; set; }
 
         private List<string> Directories { get; set; }
@@ -60,6 +60,27 @@ namespace VSLauncher
 
             // Fill directories in settings
             DirectoriesTextBox.Text = String.Join(Environment.NewLine, Directories);
+
+            // Fill ListView
+            ProjectsControl.ItemsSource = Projects;
+            CollectionView projectsView =
+                (CollectionView) CollectionViewSource.GetDefaultView(ProjectsControl.ItemsSource);
+            projectsView.Filter = ProjectFilter;
+        }
+
+        // Filter
+        private bool ProjectFilter(object item)
+        {
+            if (String.IsNullOrEmpty(SearchTextbox.Text))
+                return true;
+            else
+                return ((item as Project).Name.IndexOf(SearchTextbox.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        // Handle search
+        private void SearchTextbox_OnTextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
+        {
+            CollectionViewSource.GetDefaultView(ProjectsControl.ItemsSource).Refresh();
         }
 
         // Load projects
@@ -67,12 +88,9 @@ namespace VSLauncher
         {
             Crawler c = new Crawler(Directories);
             Projects = c.Crawl();
-
-            ProjectsCollection = new ObservableCollection<Project>(Projects);
+            
+            ProjectsControl.ItemsSource = Projects;
             ProjectsSource.Source = Projects;
-
-            ProjectsControl.ItemsSource = null;
-            ProjectsControl.ItemsSource = ProjectsCollection;
         }
 
         // Toggle settings panel
@@ -80,13 +98,13 @@ namespace VSLauncher
         {
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
             File.WriteAllText(Settings, DirectoriesTextBox.Text);
+            LoadProjects();
         }
 
         // Open project in VS
         private void OpenFile_Btn_OnClick(object sender, RoutedEventArgs e)
         {
             var file = (Project)(sender as ListView)?.SelectedItem;
-            Title = file?.Name;
             if (file != null) System.Diagnostics.Process.Start(file.Uri);
         }
 
@@ -102,20 +120,6 @@ namespace VSLauncher
                     File.WriteAllText(Settings, DirectoriesTextBox.Text);
                     LoadProjects();
                 }
-            }
-        }
-
-        // Handle search
-        private void SearchTextbox_OnTextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
-        {
-            ProjectsCollection = new ObservableCollection<Project>(Projects);
-
-            foreach (Project p in Projects)
-            {
-                string filter = SearchTextbox.Text.ToLower().Replace(" ", "");
-                string name = p.Name.ToLower().Replace(" ", "");
-                
-                if (!name.Contains(filter)) ProjectsCollection.Remove(p);
             }
         }
 
