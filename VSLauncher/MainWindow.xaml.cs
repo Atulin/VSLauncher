@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
+using ListView = System.Windows.Controls.ListView;
 
 
 namespace VSLauncher
@@ -25,9 +26,11 @@ namespace VSLauncher
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public readonly CollectionViewSource ProjectsSource = new CollectionViewSource();
         public ObservableCollection<Project> ProjectsCollection { get; set; }
         private List<Project> Projects { get; set; }
-        private List<string> Directories { get; set; } = new List<string>();
+
+        private List<string> Directories { get; set; }
         
         private const string Settings = "vsl-dirs.txt";
 
@@ -66,6 +69,7 @@ namespace VSLauncher
             Projects = c.Crawl();
 
             ProjectsCollection = new ObservableCollection<Project>(Projects);
+            ProjectsSource.Source = Projects;
 
             ProjectsControl.ItemsSource = null;
             ProjectsControl.ItemsSource = ProjectsCollection;
@@ -81,8 +85,9 @@ namespace VSLauncher
         // Open project in VS
         private void OpenFile_Btn_OnClick(object sender, RoutedEventArgs e)
         {
-            Project file = ((FrameworkElement)sender).DataContext as Project;
-            System.Diagnostics.Process.Start(file.Uri);
+            var file = (Project)(sender as ListView)?.SelectedItem;
+            Title = file?.Name;
+            if (file != null) System.Diagnostics.Process.Start(file.Uri);
         }
 
         // Select directory

@@ -1,24 +1,35 @@
-# VSLauncher
+<div align="center">
 
-<table style="margin:auto; text-align:center"  cellpadding="3">
-<tr>
-    <td>
-        <img src="https://i.imgur.com/tSU8lrO.png1">
-    </td>
-</tr>
+  <a href="https://github.com/MahApps/MahApps.Metro">
+    <img alt="VSL" width="400" src="https://i.imgur.com/tSU8lrO.png1">
+  </a>
+  <h1>VS Launcher</h1>
+  <p>
+    A fast and light project launcher for Visual Studio solutions.
+  </p>
 
-<tr>
-<td>
-<img src="https://img.shields.io/badge/version-0.1.1-green.svg?longCache=true&style=popout-square">
+  <br />
 
-<img src="https://img.shields.io/badge/using-MahApps_Metro-blue.svg?longCache=true&style=popout-square">
+  <a href="https://github.com/Atulin/VSLauncher/releases/tag/v0.1.1">
+    <img src="https://img.shields.io/badge/release-0.1.1-green.svg?longCache=true&style=flat-square" alt="Release">
+  </a>
 
-<img src="https://img.shields.io/badge/with_and_for-Visual_Studio_2017-purple.svg?longCache=true&style=popout-square">
-</td>
-</tr>
-</table>
+  <a href="https://travis-ci.org/Atulin/VSLauncher">
+    <img src="https://img.shields.io/travis-ci/Atulin/VSLauncher.svg?style=flat-square" alt="Build">
+  </a>
 
-VSLauncher (VSL) is a fast and light project launcher for Visual Studio solutions.
+  <a href="https://app.fossa.io/projects/git%2Bgithub.com%2FAtulin%2FVSLauncher?ref=badge_shield" alt="FOSSA Status">
+    <img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2FAtulin%2FVSLauncher.svg?type=shield" alt="License scan">
+  </a>
+
+  <a href="https://github.com/Atulin/VSLauncher/blob/master/LICENSE.md">
+    <img src="https://img.shields.io/badge/licence-LGPL_3.0-red.svg?longCache=true&style=flat-square" alt="License">
+  </a>
+
+  <a href="https://github.com/MahApps/MahApps.Metro">
+    <img src="https://img.shields.io/badge/with-MahApps_Metro-blue.svg?longCache=true&style=flat-square">
+  </a>
+</div>
 
 After I sterted using Jetbrains products for webdev, I got really accustomed to the Toolbox. Quick access to all recent projects turned out to be invaluable. That was the thing I've been missing in Visual Studio.
 

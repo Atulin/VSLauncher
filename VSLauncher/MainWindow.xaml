@@ -96,88 +96,89 @@
             <iconPacks:PackIconMaterial Kind="Magnify" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0"/>
         </Grid>
 
-        <ScrollViewer Grid.Row="1">
-            <ItemsControl Name="ProjectsControl"
-                          ItemsSource="{Binding ProjectsCollection}"
-                          DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Name="OpenFile_Btn"
-                                Click="OpenFile_Btn_OnClick"
-                                Height="80" Width="Auto"
-                                Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}"
-                                HorizontalAlignment="Left">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="24"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="64"/>
-                                    <ColumnDefinition Width="300"/>
-                                    <ColumnDefinition Width="100"/>
-                                </Grid.ColumnDefinitions>
+        <ListView Name="ProjectsControl"
+                  Grid.Row="1"
+                  PreviewMouseLeftButtonUp="OpenFile_Btn_OnClick"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ItemsSource="{Binding ProjectsCollection}"
+                  DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Name="OpenFile_Btn"
+                            Height="80" Width="Auto"
+                            HorizontalAlignment="Left">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="24"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="64"/>
+                                <ColumnDefinition Width="300"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
 
-                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
-                                       Source="{StaticResource vslogoDrawingImage}"></Image>
+                            <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+                                   Source="{StaticResource vslogoDrawingImage}"></Image>
 
-                                <Label Grid.Column="1" Grid.Row="0"
-                                       FontSize="20" FontFamily="Segoe UI Light"
-                                       Content="{Binding Name}"></Label>
+                            <Label Grid.Column="1" Grid.Row="0"
+                                   FontSize="20" FontFamily="Segoe UI Light"
+                                   Content="{Binding Name}"></Label>
 
-                                <Label Grid.Column="1" Grid.Row="1"
+                            <Label Grid.Column="1" Grid.Row="1"
+                                   FontSize="12" FontFamily="Segoe UI Light"
+                                   Content="{Binding Uri}">
+                                <Label.ToolTip>
+                                    <ToolTip>
+                                        <Label Content="{Binding Uri}"></Label>
+                                    </ToolTip>
+                                </Label.ToolTip>
+                            </Label>
+
+                            <StackPanel Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                        Margin="0,8">
+                                <Label Content="{Binding CreatedAtS}"
                                        FontSize="12" FontFamily="Segoe UI Light"
-                                       Content="{Binding Uri}">
+                                       Padding="0,-1">
                                     <Label.ToolTip>
                                         <ToolTip>
-                                            <Label Content="{Binding Uri}"></Label>
+                                            <TextBlock TextWrapping="Wrap">
+                                                Creation date
+                                            </TextBlock>
                                         </ToolTip>
                                     </Label.ToolTip>
                                 </Label>
+                                <Label Content="{Binding LastEditedAtS}"
+                                       FontSize="12" FontFamily="Segoe UI Light"
+                                       Padding="0,-1">
+                                    <Label.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock TextWrapping="Wrap">
+                                                Last edit date
+                                            </TextBlock>
+                                        </ToolTip>
+                                    </Label.ToolTip>
+                                </Label>
+                                <Label Content="{Binding LastOpenedAtS}"
+                                       FontSize="12" FontFamily="Segoe UI Light"
+                                       Padding="0,-1">
+                                    <Label.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock TextWrapping="Wrap">
+                                                Last open date
+                                            </TextBlock>
+                                        </ToolTip>
+                                    </Label.ToolTip>
+                                </Label>
+                            </StackPanel>
 
-                                <StackPanel Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                            Margin="0,8">
-                                    <Label Content="{Binding CreatedAtS}"
-                                           FontSize="12" FontFamily="Segoe UI Light"
-                                           Padding="0,-1">
-                                        <Label.ToolTip>
-                                            <ToolTip>
-                                                <TextBlock TextWrapping="Wrap">
-                                                    Creation date
-                                                </TextBlock>
-                                            </ToolTip>
-                                        </Label.ToolTip>
-                                    </Label>
-                                    <Label Content="{Binding LastEditedAtS}"
-                                           FontSize="12" FontFamily="Segoe UI Light"
-                                           Padding="0,-1">
-                                        <Label.ToolTip>
-                                            <ToolTip>
-                                                <TextBlock TextWrapping="Wrap">
-                                                    Last edit date
-                                                </TextBlock>
-                                            </ToolTip>
-                                        </Label.ToolTip>
-                                    </Label>
-                                    <Label Content="{Binding LastOpenedAtS}"
-                                           FontSize="12" FontFamily="Segoe UI Light"
-                                           Padding="0,-1">
-                                        <Label.ToolTip>
-                                            <ToolTip>
-                                                <TextBlock TextWrapping="Wrap">
-                                                    Last open date
-                                                </TextBlock>
-                                            </ToolTip>
-                                        </Label.ToolTip>
-                                    </Label>
-                                </StackPanel>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-                            </Grid>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
 
     </Grid>
 </Controls:MetroWindow>
