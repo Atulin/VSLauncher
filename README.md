@@ -1,4 +1,6 @@
 # VSLauncher
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FAtulin%2FVSLauncher.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FAtulin%2FVSLauncher?ref=badge_shield)
+
 
 <table style="margin:auto; text-align:center"  cellpadding="3">
 <tr>
@@ -36,3 +38,6 @@ To open a solution in VS, I had to either browse the files on my disks, or open 
 * Searching through the list of projects
 * Sorting the projects
 * Pinning projects to favourites
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FAtulin%2FVSLauncher.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FAtulin%2FVSLauncher?ref=badge_large)
