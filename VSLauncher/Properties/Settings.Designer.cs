@@ -25,12 +25,25 @@ namespace VSLauncher.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Generic.List<System.String> Directories {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Dirs {
             get {
-                return ((global::System.Collections.Generic.List<System.String>)(this["Directories"]));
+                return ((string)(this["Dirs"]));
             }
             set {
-                this["Directories"] = value;
+                this["Dirs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Setting {
+            get {
+                return ((bool)(this["Setting"]));
+            }
+            set {
+                this["Setting"] = value;
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +16,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
-using VSLauncher.Properties;
-using static System.String;
 
 
 namespace VSLauncher
@@ -27,13 +26,22 @@ namespace VSLauncher
     public partial class MainWindow : MetroWindow
     {
         public ObservableCollection<Project> ProjectsCollection { get; set; }
-        private List<Project> Projects { get; }
-        private List<string> Directories { get; set; }
+        private List<Project> Projects { get; set; }
+        private List<string> Directories { get; set; } = new List<string>();
+        
+        private const string Settings = "vsl-dirs.txt";
 
-        private Settings _settings = Settings.Default;
 
         public MainWindow()
         {
+            // Create settings file
+            if (!File.Exists(Settings))
+            {
+                File.Create(Settings);
+            }
+
+            Directories = File.ReadAllLines(Settings).ToList();
+            
             // Move to bottom right
             SizeChanged += (o, e) =>
             {
@@ -42,29 +50,32 @@ namespace VSLauncher
                 Top = r.Bottom - ActualHeight;
             };
             
-            // Load settings and sanitize list
-            Directories = _settings.Directories.Where(s => !IsNullOrWhiteSpace(s)).Distinct().ToList();
-
             // INIT
             InitializeComponent();
+            
+            LoadProjects();
 
-            dbg.Text = Directories.Count().ToString();
+            // Fill directories in settings
+            DirectoriesTextBox.Text = String.Join(Environment.NewLine, Directories);
+        }
 
-            // load projects
+        // Load projects
+        public void LoadProjects()
+        {
             Crawler c = new Crawler(Directories);
-
             Projects = c.Crawl();
 
             ProjectsCollection = new ObservableCollection<Project>(Projects);
 
-            // Fill directories in settings
-            DirectoriesTextBox.Text = Join(Environment.NewLine, Directories);
+            ProjectsControl.ItemsSource = null;
+            ProjectsControl.ItemsSource = ProjectsCollection;
         }
 
-        // Open settings panel
+        // Toggle settings panel
         private void SettingsBtn_OnClick(object sender, RoutedEventArgs e)
         {
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
+            File.WriteAllText(Settings, DirectoriesTextBox.Text);
         }
 
         // Open project in VS
@@ -83,8 +94,8 @@ namespace VSLauncher
                 {
                     DirectoriesTextBox.Text += folderBrowserDialog.SelectedPath + Environment.NewLine;
                     Directories = DirectoriesTextBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-                    _settings.Directories = Directories;
-                    _settings.Save();
+                    File.WriteAllText(Settings, DirectoriesTextBox.Text);
+                    LoadProjects();
                 }
             }
         }
@@ -98,11 +109,14 @@ namespace VSLauncher
             {
                 string filter = SearchTextbox.Text.ToLower().Replace(" ", "");
                 string name = p.Name.ToLower().Replace(" ", "");
-
-                Title = (name.Contains(filter)).ToString();
-
+                
                 if (!name.Contains(filter)) ProjectsCollection.Remove(p);
             }
+        }
+
+        private void MainWindow_OnClosed(object sender, EventArgs e)
+        {
+            File.WriteAllText(Settings, DirectoriesTextBox.Text);
         }
     }
 }
