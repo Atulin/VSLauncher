@@ -1,10 +1,22 @@
 # VSLauncher
 
-![version 0.1.0](https://img.shields.io/badge/version-0.1.0-green.svg?longCache=true&style=popout-square)
+<table style="margin:auto; text-align:center"  cellpadding="3">
+<tr>
+    <td>
+        <img src="https://i.imgur.com/tSU8lrO.png1">
+    </td>
+</tr>
 
-![MahApps Metro](https://img.shields.io/badge/using-MahApps_Metro-blue.svg?longCache=true&style=popout-square&link=https://github.com/MahApps/MahApps.Metro&link=https://github.com/MahApps/MahApps.Metro)
+<tr>
+<td>
+<img src="https://img.shields.io/badge/version-0.1.1-green.svg?longCache=true&style=popout-square">
 
-![Visual Studio](https://img.shields.io/badge/with_and_for-Visual_Studio_2017-purple.svg?longCache=true&style=popout-square)
+<img src="https://img.shields.io/badge/using-MahApps_Metro-blue.svg?longCache=true&style=popout-square">
+
+<img src="https://img.shields.io/badge/with_and_for-Visual_Studio_2017-purple.svg?longCache=true&style=popout-square">
+</td>
+</tr>
+</table>
 
 VSLauncher (VSL) is a fast and light project launcher for Visual Studio solutions.
 
