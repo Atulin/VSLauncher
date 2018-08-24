@@ -4,7 +4,9 @@
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:vsLauncher="clr-namespace:VSLauncher"
+                      mc:Ignorable="d"
                       Title="VSLauncher"
                       Height="700" Width="480"
                       WindowStartupLocation="Manual"
@@ -12,6 +14,10 @@
                       BorderBrush="Transparent"
                       IsWindowDraggable="False"
                       Closed="MainWindow_OnClosed">
+
+    <Window.Resources>
+        <vsLauncher:BoolToStringConverter x:Key="IsPinnedConvert" FalseValue="All" TrueValue="Pinned"></vsLauncher:BoolToStringConverter>
+    </Window.Resources>
 
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
@@ -41,23 +47,35 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition Width="32"/>
+                            <ColumnDefinition Width="32"/>
                         </Grid.ColumnDefinitions>
                         
-                        <Label Content="Directories to scan" 
+                        <TextBlock Text="Directories to scan" 
                                FontSize="20" FontFamily="Segoe UI Light">
-                            <Label.ToolTip>
+                            <TextBlock.ToolTip>
                                 <ToolTip>
-                                    <Label Content="One directory per line"></Label>
+                                    <TextBlock Text="One directory per line"></TextBlock>
                                 </ToolTip>
-                            </Label.ToolTip>
-                        </Label>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
 
-                        <Button Name="SelectDirectoryBtn"
-                                Click="SelectDirectoryBtn_OnClick"
+                        <Button Name="CrawlBtn"
+                                Click="CrawlBtn_OnClick"
                                 Grid.Column="1"
                                 Background="Transparent"
                                 BorderBrush="Transparent" BorderThickness="0"
-                                Margin="0" Padding="0">
+                                Margin="0" Padding="0"
+                                ToolTip="Crawl selected directories">
+                            <iconPacks:PackIconMaterial Kind="Sync" />
+                        </Button>
+
+                        <Button Name="SelectDirectoryBtn"
+                                Click="SelectDirectoryBtn_OnClick"
+                                Grid.Column="2"
+                                Background="Transparent"
+                                BorderBrush="Transparent" BorderThickness="0"
+                                Margin="0" Padding="0"
+                                ToolTip="Browse for directories">
                             <iconPacks:PackIconMaterial Kind="FolderPlus" />
                         </Button>
 
@@ -99,13 +117,25 @@
         <ListView Name="ProjectsControl"
                   Grid.Row="1"
                   PreviewMouseLeftButtonUp="OpenFile_Btn_OnClick"
+                  PreviewMouseRightButtonUp="PinProject_Btn_Click"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding IsPinned, Converter={StaticResource IsPinnedConvert}}"/>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Name="OpenFile_Btn"
-                            Height="80" Width="Auto"
-                            HorizontalAlignment="Left">
+                          Height="70" Width="Auto"
+                          HorizontalAlignment="Left">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -118,57 +148,59 @@
                             </Grid.ColumnDefinitions>
 
                             <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
-                                   Source="{StaticResource vslogoDrawingImage}"></Image>
+                                   Source="{StaticResource vslogoDrawingImage}"
+                                   Margin="0,0,8,0"></Image>
 
-                            <Label Grid.Column="1" Grid.Row="0"
-                                   FontSize="20" FontFamily="Segoe UI Light"
-                                   Content="{Binding Name}"></Label>
+                            <TextBlock Grid.Column="1" Grid.Row="0"
+                                       FontSize="24" FontFamily="Segoe UI Light"
+                                       Text="{Binding Name}"
+                                       VerticalAlignment="Center"></TextBlock>
 
-                            <Label Grid.Column="1" Grid.Row="1"
-                                   FontSize="12" FontFamily="Segoe UI Light"
-                                   Content="{Binding Uri}">
-                                <Label.ToolTip>
+                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                       FontSize="12" FontFamily="Segoe UI Light"
+                                       Text="{Binding Uri}">
+                                <TextBlock.ToolTip>
                                     <ToolTip>
-                                        <Label Content="{Binding Uri}"></Label>
+                                        <TextBlock Text="{Binding Uri}"></TextBlock>
                                     </ToolTip>
-                                </Label.ToolTip>
-                            </Label>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
 
                             <StackPanel Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
                                         Margin="0,8">
-                                <Label Content="{Binding CreatedAtS}"
-                                       FontSize="12" FontFamily="Segoe UI Light"
-                                       Padding="0,-1">
-                                    <Label.ToolTip>
+                                <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                           FontSize="12" FontFamily="Segoe UI Light"
+                                           Padding="0,-1">
+                                    <TextBlock.ToolTip>
                                         <ToolTip>
                                             <TextBlock TextWrapping="Wrap">
                                                 Creation date
                                             </TextBlock>
                                         </ToolTip>
-                                    </Label.ToolTip>
-                                </Label>
-                                <Label Content="{Binding LastEditedAtS}"
-                                       FontSize="12" FontFamily="Segoe UI Light"
-                                       Padding="0,-1">
-                                    <Label.ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBlock Text="{Binding LastEditedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                           FontSize="12" FontFamily="Segoe UI Light"
+                                           Padding="0,-1">
+                                    <TextBlock.ToolTip>
                                         <ToolTip>
                                             <TextBlock TextWrapping="Wrap">
                                                 Last edit date
                                             </TextBlock>
                                         </ToolTip>
-                                    </Label.ToolTip>
-                                </Label>
-                                <Label Content="{Binding LastOpenedAtS}"
-                                       FontSize="12" FontFamily="Segoe UI Light"
-                                       Padding="0,-1">
-                                    <Label.ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBlock Text="{Binding LastOpenedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                           FontSize="12" FontFamily="Segoe UI Light"
+                                           Padding="0,-1">
+                                    <TextBlock.ToolTip>
                                         <ToolTip>
                                             <TextBlock TextWrapping="Wrap">
                                                 Last open date
                                             </TextBlock>
                                         </ToolTip>
-                                    </Label.ToolTip>
-                                </Label>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </StackPanel>
 
                         </Grid>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,11 +29,12 @@ namespace VSLauncher
     {
         public CollectionViewSource ProjectsSource { get; set; } = new CollectionViewSource();
 
-        private List<Project> Projects { get; set; }
+        private List<Project> Projects { get; set; } = new List<Project>();
 
         private List<string> Directories { get; set; }
         
         private const string Settings = "vsl-dirs.txt";
+        private const string ProjectsSave = "projects.json";
 
 
         public MainWindow()
@@ -41,6 +43,12 @@ namespace VSLauncher
             if (!File.Exists(Settings))
             {
                 File.Create(Settings);
+            }
+
+            // Create projects file
+            if (!File.Exists(ProjectsSave))
+            {
+                File.Create(ProjectsSave);
             }
 
             Directories = File.ReadAllLines(Settings).ToList();
@@ -56,7 +64,9 @@ namespace VSLauncher
             // INIT
             InitializeComponent();
             
-            LoadProjects();
+            CrawlDirectories();
+
+            SProjects.Save(Projects, ProjectsSave);
 
             // Fill directories in settings
             DirectoriesTextBox.Text = String.Join(Environment.NewLine, Directories);
@@ -66,6 +76,11 @@ namespace VSLauncher
             CollectionView projectsView =
                 (CollectionView) CollectionViewSource.GetDefaultView(ProjectsControl.ItemsSource);
             projectsView.Filter = ProjectFilter;
+            // Sort by creation date
+            projectsView.SortDescriptions.Add(new SortDescription("CreatedAt", ListSortDirection.Descending));
+            projectsView.SortDescriptions.Add(new SortDescription("IsPinned", ListSortDirection.Descending));
+            // Group by pinned
+            projectsView.GroupDescriptions.Add(new PropertyGroupDescription("IsPinned"));
         }
 
         // Filter
@@ -86,11 +101,33 @@ namespace VSLauncher
         // Load projects
         public void LoadProjects()
         {
-            Crawler c = new Crawler(Directories);
-            Projects = c.Crawl();
+            Projects = SProjects.Read(ProjectsSave);
             
             ProjectsControl.ItemsSource = Projects;
             ProjectsSource.Source = Projects;
+
+            CollectionViewSource.GetDefaultView(ProjectsControl.ItemsSource).Refresh();
+        }
+
+        // Crawl for projects
+        public void CrawlDirectories()
+        {
+            Crawler c = new Crawler(Directories);
+            var crawled = c.Crawl();
+
+            foreach (var cr in crawled)
+            {
+                if (!Projects.Contains(cr)) Projects.Add(cr);
+            }
+
+            SProjects.Save(Projects, ProjectsSave);
+            LoadProjects();
+        }
+
+        // Crawl directories
+        private void CrawlBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            CrawlDirectories();
         }
 
         // Toggle settings panel
@@ -98,7 +135,9 @@ namespace VSLauncher
         {
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
             File.WriteAllText(Settings, DirectoriesTextBox.Text);
-            LoadProjects();
+
+            if (SettingsFlyout.IsOpen)
+                CrawlDirectories();
         }
 
         // Open project in VS
@@ -106,6 +145,20 @@ namespace VSLauncher
         {
             var file = (Project)(sender as ListView)?.SelectedItem;
             if (file != null) System.Diagnostics.Process.Start(file.Uri);
+        }
+
+        // Pin projects
+        private void PinProject_Btn_Click(object sender, MouseButtonEventArgs e)
+        {
+            var file = (Project)(sender as ListView)?.SelectedItem;
+
+            if (file != null)
+            {
+                file.IsPinned = true;
+                Projects[Projects.IndexOf(file)].IsPinned = true;
+                SProjects.Save(Projects, ProjectsSave);
+                CollectionViewSource.GetDefaultView(ProjectsControl.ItemsSource).Refresh();
+            }
         }
 
         // Select directory
@@ -118,11 +171,12 @@ namespace VSLauncher
                     DirectoriesTextBox.Text += folderBrowserDialog.SelectedPath + Environment.NewLine;
                     Directories = DirectoriesTextBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
                     File.WriteAllText(Settings, DirectoriesTextBox.Text);
-                    LoadProjects();
+                    CrawlDirectories();
                 }
             }
         }
 
+        // Handle window close
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
             File.WriteAllText(Settings, DirectoriesTextBox.Text);

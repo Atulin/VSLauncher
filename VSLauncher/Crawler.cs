@@ -19,6 +19,8 @@ namespace VSLauncher
 
         public List<Project> Crawl()
         {
+            if (Locations.Count <= 0) return new List<Project>();
+
             List<Project> projects = new List<Project>();
 
             int i = 0;
