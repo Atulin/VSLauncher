@@ -11,7 +11,7 @@
   <br />
 
   <a href="https://github.com/Atulin/VSLauncher/releases/tag/v0.1.1">
-    <img src="https://img.shields.io/badge/release-0.1.1-green.svg?longCache=true&style=flat-square" alt="Release">
+    <img src="https://img.shields.io/badge/release-0.2.0-green.svg?longCache=true&style=flat-square" alt="Release">
   </a>
 
   <a href="https://travis-ci.org/Atulin/VSLauncher">
